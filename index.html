@@ -325,6 +325,88 @@
   .nav-btn:hover { background: #2d3561; }
   .nav-btn:disabled { opacity: 0.3; cursor: default; }
 
+  /* ── Botón diapositivas en header ── */
+  #btn-slides {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 3px 12px rgba(230,57,70,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    white-space: nowrap;
+  }
+  #btn-slides:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(230,57,70,0.5);
+  }
+  #btn-slides:active { transform: translateY(0); }
+
+  /* ── Modal iframe Canva ── */
+  #slides-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    background: rgba(10,10,20,0.95);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.25s ease;
+  }
+  #slides-modal.active { display: flex; }
+
+  #slides-modal .modal-header {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+  }
+  #slides-modal .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: #f0ece2;
+  }
+  #slides-modal .modal-close {
+    background: #e63946;
+    border: none;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Barlow', sans-serif;
+    transition: background 0.2s;
+  }
+  #slides-modal .modal-close:hover { background: #c1121f; }
+
+  #slides-iframe {
+    width: 100%;
+    max-width: 1100px;
+    height: 75vh;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  }
+
+  @media (max-width: 600px) {
+    #slides-iframe { height: 65vh; }
+    #btn-slides { font-size: 0.8rem; padding: 8px 14px; }
+  }
+
   /* ── Player de música flotante ── */
   #music-player {
     position: fixed;
@@ -422,8 +504,25 @@
     <h1>Recorrido Perdomo</h1>
     <span>Ciudad Bolívar, Bogotá · Localidad 19</span>
   </div>
-  <div class="badge">Proyecto Académico · Uniminuto</div>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <button id="btn-slides" onclick="openSlides()">📊 Ver Presentación</button>
+    <div class="badge">Proyecto Académico · Uniminuto</div>
+  </div>
 </header>
+
+<!-- Modal Presentación Canva -->
+<div id="slides-modal">
+  <div class="modal-header">
+    <span class="modal-title">📊 Presentación del Proyecto</span>
+    <button class="modal-close" onclick="closeSlides()">✕ Cerrar</button>
+  </div>
+  <iframe
+    id="slides-iframe"
+    src="https://www.canva.com/design/DAHDGBTixzw/y1XlrkCOr_rdL-QbRqR-zw/view?utm_content=DAHDGBTixzw&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1bc0d311a1&embed"
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+</div>
 
 <div class="map-container">
   <div class="map-wrapper">
@@ -826,7 +925,22 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeLightbox();
     closePage();
+    closeSlides();
   }
+});
+
+// ── Modal Presentación Canva ──
+function openSlides() {
+  document.getElementById('slides-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSlides() {
+  document.getElementById('slides-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+// Cerrar al hacer clic en el fondo oscuro
+document.getElementById('slides-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSlides();
 });
 
 // ── Player de música ──
